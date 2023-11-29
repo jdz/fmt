@@ -1,6 +1,6 @@
 (in-package #:lv.jonis.fmt)
 
-(defun nbytes (stream n &optional colon? at-sign?)
+(defun nbytes (stream n &optional colon? at-sign? mincol)
   "Formats amount of N bytes in a human-readable fashion using powers
 of 1024, or powers of 1000 with colon modifier."
   ;; XXX: Do we really need to use double-floats?
@@ -19,10 +19,11 @@ of 1024, or powers of 1000 with colon modifier."
            (loop for i fixnum from 0 below (1- (length units))
                  for f double-float = (coerce n 'double-float) then (/ f base)
                  until (< f base)
-                 finally (let ((unit (schar units i)))
+                 finally (let ((unit (schar units i))
+                               (width (and mincol (1- mincol))))
                            (if (and (< f 10) (plusp i))
-                               (format stream "~,1F~A" f unit)
-                               (format stream "~D~A" (round f) unit))))))))
+                               (format stream "~V,1F~A" width f unit)
+                               (format stream "~VD~A" width (round f) unit))))))))
 
 (defun bytes (stream bytes &optional colon? at-sign?)
   "Formats a sequence of BYTES as hex-digit pairs."
