@@ -2,28 +2,23 @@
 
 (defun nbytes (stream n &optional colon? at-sign? mincol)
   "Formats amount of N bytes in a human-readable fashion using powers
-of 1024, or powers of 1000 with colon modifier."
-  ;; XXX: Do we really need to use double-floats?
-  ;;
+of 1024, or powers of 1000 with colon modifier.  With an at-sign
+modifier does some rounding."
   ;; TODO:
   ;; - We can use LOG, at least for the metric units.
-  (declare (ignore at-sign?)
-           (type unsigned-byte n))
-  (cond ((zerop n)
-         (write-string "0B" stream))
-        (t
-         (multiple-value-bind (base units)
-             (if colon?
-                 (values 1000.0d0 "BkMGTPEZY")
-                 (values 1024.0d0 "BKMGTPEZY"))
-           (loop for i fixnum from 0 below (1- (length units))
-                 for f double-float = (coerce n 'double-float) then (/ f base)
-                 until (< f base)
-                 finally (let ((unit (schar units i))
-                               (width (and mincol (1- mincol))))
-                           (if (and (< f 10) (plusp i))
-                               (format stream "~V,1F~A" width f unit)
-                               (format stream "~VD~A" width (round f) unit))))))))
+  (multiple-value-bind (base units)
+      (if colon?
+          (values 1000.0s0 "kMGTPEZYRQ")
+          (values 1024.0s0 "KMGTPEZY"))
+    (if (< n base)
+        (format stream "~VD" mincol n)
+        (loop for unit across units
+              for f single-float = (/ n base) then (/ f base)
+              until (< f base)
+              finally (let ((width (and mincol (1- mincol))))
+                        (if (and at-sign? (<= 10 f))
+                            (format stream "~VD~A" width (round f) unit)
+                            (format stream "~V,1F~A" width f unit)))))))
 
 (defun bytes (stream bytes &optional colon? at-sign?)
   "Formats a sequence of BYTES as hex-digit pairs."

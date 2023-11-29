@@ -4,15 +4,48 @@
 
 (define-test nbytes
   :parent all
-  (is equal "1000B" (format nil "~/fmt:nbytes/" 1000))
-  (is equal "1.0K" (format nil "~/fmt:nbytes/" 1024))
-  (is equal "1.0k" (format nil "~:/fmt:nbytes/" 1000))
   ;; TODO: Not sure if we want rounding up :/
   (skip "Not sure about rounding"
         (is equal "1.9K" (format nil "~/fmt:nbytes/" 2000)))
-  (is equal "977K" (format nil "~/fmt:nbytes/" (expt 10 6)))
-  (is equal "1.0M" (format nil "~/fmt:nbytes/" (expt 2 20)))
-  (is equal "1.0M" (format nil "~:/fmt:nbytes/" (expt 10 6))))
+  (is equal "976.6K" (format nil "~/fmt:nbytes/" (expt 1000 2)))
+  )
+
+(define-test nbytes-dec
+  :parent nbytes
+  (is equal "999"  (format nil "~:/fmt:nbytes/" 999))
+  (is equal "1.0k" (format nil "~:/fmt:nbytes/" (expt 1000 1)))
+  (is equal "1.0M" (format nil "~:/fmt:nbytes/" (expt 1000 2)))
+  (is equal "1.0G" (format nil "~:/fmt:nbytes/" (expt 1000 3)))
+  (is equal "1.0T" (format nil "~:/fmt:nbytes/" (expt 1000 4)))
+  (is equal "1.0P" (format nil "~:/fmt:nbytes/" (expt 1000 5)))
+  (is equal "1.0E" (format nil "~:/fmt:nbytes/" (expt 1000 6)))
+  (is equal "1.0Z" (format nil "~:/fmt:nbytes/" (expt 1000 7)))
+  (is equal "1.0Y" (format nil "~:/fmt:nbytes/" (expt 1000 8)))
+  (is equal "1.0R" (format nil "~:/fmt:nbytes/" (expt 1000 9)))
+  (is equal "1.0Q" (format nil "~:/fmt:nbytes/" (expt 1000 10)))
+  (is equal "1000.0Q" (format nil "~:/fmt:nbytes/" (expt 1000 11))))
+
+(define-test nbytes-dec-rounded
+  :parent nbytes
+  (is equal "2.9M" (format nil "~:@/fmt:nbytes/" 2949999))
+  (is equal "3.0M" (format nil "~:@/fmt:nbytes/" 2950000)))
+
+(define-test nbytes-bin
+  :parent nbytes
+  (is equal "1023" (format nil "~/fmt:nbytes/" 1023))
+  (is equal "1.0K" (format nil "~/fmt:nbytes/" 1024))
+  (is equal "1.0M" (format nil "~/fmt:nbytes/" (expt 1024 2)))
+  (is equal "1.0G" (format nil "~/fmt:nbytes/" (expt 1024 3)))
+  (is equal "1.0T" (format nil "~/fmt:nbytes/" (expt 1024 4)))
+  (is equal "1.0P" (format nil "~/fmt:nbytes/" (expt 1024 5)))
+  (is equal "1.0E" (format nil "~/fmt:nbytes/" (expt 1024 6)))
+  (is equal "1.0Z" (format nil "~/fmt:nbytes/" (expt 1024 7)))
+  (is equal "1.0Y" (format nil "~/fmt:nbytes/" (expt 1024 8))))
+
+(define-test nbytes-bin-round
+  :parent nbytes
+  (is equal "2.9M" (format nil "~/fmt:nbytes/" 3093299))
+  (is equal "3.0M" (format nil "~/fmt:nbytes/" 3093300)))
 
 (define-test bytes
   :parent all
