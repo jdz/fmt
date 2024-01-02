@@ -1,0 +1,31 @@
+* LV.JONIS.FMT
+
+A package with utility functions to be used with tilde slash FORMAT operation.
+
+* Basic usage
+
+Since there already was an ~fmt~ library in Quicklisp I had to use a more
+verbose package name (which is a good idea, anyway).  But when using this
+library (and in examples below) I add a package-local nickname ~fmt~:
+
+#+name: demo
+#+begin_src lisp :results output
+  (defpackage #:demo
+    (:use #:common-lisp)
+    (:local-nicknames (#:fmt #:lv.jonis.fmt)))
+
+  (in-package #:demo)
+
+  (format t "~@/fmt:ts/~%" (encode-universal-time 33 22 11 12 5 1994))
+  (format t "~/fmt:nbytes/B~%" most-positive-fixnum)
+  (format t "~/fmt:bytes/~%" (map 'vector #'char-code "Hello, world!"))
+#+end_src
+
+The output is:
+
+#+RESULTS: demo
+: 1994-05-12T11:22:33
+: 4.0EB
+: 48656C6C6F2C20776F726C6421
+
+More examples and expected results can be found in [[file:tests/fmt.lisp]].

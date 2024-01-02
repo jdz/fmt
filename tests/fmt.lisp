@@ -40,7 +40,8 @@
   (is equal "1.0P" (format nil "~/fmt:nbytes/" (expt 1024 5)))
   (is equal "1.0E" (format nil "~/fmt:nbytes/" (expt 1024 6)))
   (is equal "1.0Z" (format nil "~/fmt:nbytes/" (expt 1024 7)))
-  (is equal "1.0Y" (format nil "~/fmt:nbytes/" (expt 1024 8))))
+  (is equal "1.0Y" (format nil "~/fmt:nbytes/" (expt 1024 8)))
+  (is equal "1024.0Y" (format nil "~/fmt:nbytes/" (expt 1024 9))))
 
 (define-test nbytes-bin-round
   :parent nbytes
